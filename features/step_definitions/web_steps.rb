@@ -48,12 +48,18 @@ Given /^the blog is set up$/ do
                 :name => 'publisher',
                 :state => 'active'})
   Article.create!({
+    title: 'Article 1',
+    body: 'First blog article',
+    extended: '',
+    user: publisher,
+  })
+  Article.create!({
     title: 'Article 2',
     body: 'Second blog article',
+    extended: '',
     user: publisher,
   })
 end
-
 And /^I am logged into the admin panel$/ do
   visit '/accounts/login'
   fill_in 'user_login', :with => 'admin'
@@ -103,6 +109,11 @@ end
 
 When /^(?:|I )follow "([^"]*)"$/ do |link|
   click_link(link)
+end
+
+When /^(?:|I )fill in "([^"]*)" with the id for article "([^"]*)"$/ do |field, title|
+  article = Article.find_by_title title 
+  fill_in(field, :with => article.id)
 end
 
 When /^(?:|I )fill in "([^"]*)" with "([^"]*)"$/ do |field, value|

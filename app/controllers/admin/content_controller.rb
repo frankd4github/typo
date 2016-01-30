@@ -6,6 +6,25 @@ class Admin::ContentController < Admin::BaseController
 
   cache_sweeper :blog_sweeper
 
+  def merge_with
+    if params[:id] == params[:merge][:with]
+      flash[:error] = "Cannot merge article with itself"
+      redirect_to action: 'edit', id: params[:id]
+      return
+    end
+    @article = Article.find(params[:id])
+    similar_article = Article.find_by_id(params[:merge][:with])
+    if similar_article.nil?
+      flash[:error] = "Article #{params[:merge][:with]} does not exist"
+      redirect_to action: 'edit', id: params[:id]
+      return
+    end
+    @article.merge_with(similar_article)
+    flash[:notice] = "Articles #{@article.id} and #{similar_article.id} merged successfully"
+    redirect_to :action => 'index'
+    return
+  end
+
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip
     render :inline => "<%= raw auto_complete_result @items, 'name' %>"
@@ -240,4 +259,5 @@ class Admin::ContentController < Admin::BaseController
   def setup_resources
     @resources = Resource.by_created_at
   end
+  
 end
