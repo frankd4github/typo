@@ -417,12 +417,11 @@ class Article < Content
   end
 
   def merge_with(article)
-    article.comments.each do |c|
-      c.article = self
-    end
+    self.comments = self.comments + article.comments
     self.body = self.body + article.body
     self.extended = self.extended + article.extended
-    save
+    self.save
+    article.comments(true)
     article.destroy
   end
 

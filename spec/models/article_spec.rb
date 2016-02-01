@@ -630,5 +630,16 @@ describe Article do
     end
 
   end
+
+  it "#merge_with" do
+    article1 = Factory.create(:article, body: 'body1')
+    article2 = Factory.create(:article, body: 'body2')
+    comment1 = Factory.create(:comment, article: article1)
+    comment2 = Factory.create(:comment, article: article2)
+    article1.merge_with article2
+    article1.body.should be == 'body1body2'
+    Article.find_by_id(article2.id).should be nil
+    article1.comments.should be == [comment1, comment2]
+  end
 end
 
