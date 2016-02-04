@@ -13,7 +13,7 @@ class Admin::ContentController < Admin::BaseController
       return
     end
     @article = Article.find(params[:id])
-    similar_article = Article.find_by_id(params[:merge][:with])
+    similar_article = Article.find_by_id params[:merge_with]
     if similar_article.nil?
       flash[:error] = "Article #{params[:merge][:with]} does not exist"
       redirect_to action: 'edit', id: params[:id]
