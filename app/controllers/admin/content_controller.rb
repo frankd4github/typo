@@ -7,9 +7,9 @@ class Admin::ContentController < Admin::BaseController
   cache_sweeper :blog_sweeper
 
   def merge_with
-    if params[:id] == params[:merge][:with]
-      flash[:error] = "Cannot merge article with itself"
-      redirect_to action: 'edit', id: params[:id]
+    if not current_user.admin?
+      flash[:error] = "Only blog administrators can perform this function"
+      redirect_to action: 'index'
       return
     end
     @article = Article.find(params[:id])
